@@ -33,7 +33,7 @@ class JobService:
         time.sleep(self.search_delay)
         return self.driver.page_source
     
-    def get_job_offers(self, text_search: str):
+    def get_job_offers(self, text_search: str) -> None:
         html = self.get_html(text_search)
         soup = BeautifulSoup(html, 'html.parser')
         jobs = soup.find_all('div', attrs={'data-job-id': True})
@@ -46,7 +46,6 @@ class JobService:
     def process_job(self, job: Tag) -> Job:
         title = job.find("a", class_="job-card-container__link").get_text(strip=True, separator=", ")
         business = job.find("div", class_="artdeco-entity-lockup__subtitle").get_text(strip=True, separator=", ")
-        location = job.find("li", class_="mLeKCjQRtsiFjsULGJlKoxTjWQNbYEHegw").get_text(strip=True, separator=", ") if job.find("li", class_="mLeKCjQRtsiFjsULGJlKoxTjWQNbYEHegw") is not None else "Unknown"
         url = job.find("a", class_="job-card-container__link")["href"]
         img = job.find("img")
         logo_url = img["src"] if img else None
@@ -62,7 +61,7 @@ class JobService:
         
         job_details = self.get_details(soup)
 
-        return Job(title,description,business,location,url,logo_url, job_details)
+        return Job(title,description,business,url,logo_url, job_details)
     
     def get_details(self, soup: BeautifulSoup) -> JobDetails:
         primary_desc = soup.find('div', class_='job-details-jobs-unified-top-card__primary-description-container')
