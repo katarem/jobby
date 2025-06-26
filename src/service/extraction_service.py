@@ -1,7 +1,7 @@
 class ExtractionService:
 
     def __init__(self, keywords: list[str]):
-        self.keywords = keywords
+        self.keywords = [keyword.lower() for keyword in keywords]
 
     def detect_keywords(self, description: str) -> bool:
         desc_lower = description.lower()
