@@ -5,6 +5,7 @@ from selenium import webdriver
 
 from model.job import Job
 from model.job_details import JobDetails
+from service.extraction_service import ExtractionService
 from utils.utils import is_first_launch
 
 class JobService:
@@ -13,9 +14,10 @@ class JobService:
     search_link = f"{base_link}/jobs/search/?keywords=%s"
     search_delay = 60
 
-    def __init__(self, user_data: str):
+    def __init__(self, user_data: str, extraction_service: ExtractionService):
         self.user_data = user_data
         self.driver = webdriver.Chrome(options=self.load_options())
+        self.extraction_service = extraction_service
 
     def load_options(self) -> Options:
         options = Options()
@@ -33,15 +35,16 @@ class JobService:
         time.sleep(self.search_delay)
         return self.driver.page_source
     
-    def get_job_offers(self, text_search: str) -> None:
+    def get_job_offers(self, text_search: str) -> list[Job]:
         html = self.get_html(text_search)
         soup = BeautifulSoup(html, 'html.parser')
         jobs = soup.find_all('div', attrs={'data-job-id': True})
-        clean_jobs: list[Job] = []
+        filtered_jobs: list[Job] = []
         for job in jobs:
-            clean_jobs.append(self.process_job(job))
-        for index, job in enumerate(clean_jobs):
-            print(f"{index}.\n{job}")
+            clean_job = self.process_job(job)
+            if self.extraction_service.detect_keywords(clean_job.description):
+                filtered_jobs.append(clean_job)
+        return filtered_jobs
 
     def process_job(self, job: Tag) -> Job:
         title = job.find("a", class_="job-card-container__link").get_text(strip=True, separator=", ")
