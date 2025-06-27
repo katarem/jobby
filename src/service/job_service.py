@@ -1,4 +1,5 @@
 import time
+import urllib.parse
 from bs4 import BeautifulSoup, Tag
 from selenium.webdriver.chrome.options import Options
 from selenium import webdriver
@@ -30,7 +31,7 @@ class JobService:
         return options
     
     def get_html(self, job: str, start: int) -> str:
-        job_to_search = job.replace(" ","%20")
+        job_to_search = urllib.parse.quote(job)
         final_link = self.search_link.replace("%s",job_to_search)
         if start > 0:
             final_link += f"&start={start}"
