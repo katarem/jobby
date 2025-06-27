@@ -1,3 +1,6 @@
+from dataclasses import asdict
+import json
+import os
 import time
 import urllib.parse
 from bs4 import BeautifulSoup, Tag
@@ -7,6 +10,7 @@ from selenium import webdriver
 from model.job import Job
 from model.job_details import JobDetails
 from service.extraction_service import ExtractionService
+from model.search_result import SearchResult
 from utils.utils import is_first_launch
 
 class JobService:
@@ -20,6 +24,7 @@ class JobService:
         self.user_data = user_data
         self.driver = webdriver.Chrome(options=self.load_options())
         self.extraction_service = extraction_service
+        self.export_path = os.path.join(os.getenv('USER_DATA_DIR', os.path.join(os.getcwd(),'user_data')), 'export.json')
 
     def load_options(self) -> Options:
         options = Options()
@@ -41,7 +46,7 @@ class JobService:
     
     def get_job_offers(self, text_search: str, pages: int = 3) -> list[Job]:
         jobs = []
-        filtered_jobs: list[Job] = []
+        filtered_jobs: list[SearchResult] = []
 
         for page_index in range(pages):
             html = self.get_html(text_search, self.jobs_chunk * page_index)
@@ -51,8 +56,20 @@ class JobService:
         for job in jobs:
             clean_job = self.process_job(job)
             if self.extraction_service.detect_keywords(clean_job.description):
-                filtered_jobs.append(clean_job)
+                keywords = self.extraction_service.extract_keywords(clean_job.description)
+                filtered_jobs.append(SearchResult(clean_job, keywords))
+
         return filtered_jobs
+    
+    def export_job_offers(self, jobs: list[SearchResult]) -> bool:
+        try:
+            export_json = json.dumps([asdict(job) for job in jobs], indent=4)
+            with open(self.export_path, mode= 'w', encoding= 'utf-8') as export_file:
+                export_file.write(export_json)
+            return True
+        except Exception as e:
+            print(e)
+            return False
 
     def process_job(self, job: Tag) -> Job:
         title = job.find("a", class_="job-card-container__link").get_text(strip=True, separator=", ")
