@@ -11,7 +11,8 @@ from model.search_result import SearchResult
 class TestJobService(unittest.TestCase):
 
     def tearDown(self):
-        shutil.rmtree("test_user_data")
+        if os.path.exists("test_user_data"):
+            shutil.rmtree("test_user_data")
 
     def setUp(self):
         os.mkdir("test_user_data")
