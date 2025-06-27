@@ -15,6 +15,7 @@ if __name__ == "__main__":
 
     extraction_service = ExtractionService(config.keywords)
     job_service = JobService(user_data=user_data_dir, extraction_service=extraction_service)
-    jobs = job_service.get_job_offers(config.job_title)
+    jobs = job_service.get_job_offers(config.job_title, 1)
     for job in jobs:
         print(job)
+    print(f"jobs with one or more keywords: {len(jobs)}")
