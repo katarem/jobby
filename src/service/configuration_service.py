@@ -10,7 +10,7 @@ class ConfigurationService:
         config_path = os.path.join(os.getcwd(), 'config.json')
         if not os.path.exists(config_path):
             raise ConfigurationFileNotFoundError()
-        with open(config_path) as file:
+        with open(config_path, encoding='utf-8') as file:
             try:
                 config = json.load(file)
             except json.JSONDecodeError as e:
