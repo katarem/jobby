@@ -1,4 +1,5 @@
 import time
+import urllib.parse
 from bs4 import BeautifulSoup, Tag
 from selenium.webdriver.chrome.options import Options
 from selenium import webdriver
@@ -13,6 +14,7 @@ class JobService:
     base_link = "https://linkedin.com"
     search_link = f"{base_link}/jobs/search/?keywords=%s"
     search_delay = 60
+    jobs_chunk = 25
 
     def __init__(self, user_data: str, extraction_service: ExtractionService):
         self.user_data = user_data
@@ -28,18 +30,24 @@ class JobService:
             self.search_delay = 5
         return options
     
-    def get_html(self, job: str) -> str:
-        job_to_search = job.replace(" ","%20d")
+    def get_html(self, job: str, start: int) -> str:
+        job_to_search = urllib.parse.quote(job)
         final_link = self.search_link.replace("%s",job_to_search)
+        if start > 0:
+            final_link += f"&start={start}"
         self.driver.get(final_link)
         time.sleep(self.search_delay)
         return self.driver.page_source
     
-    def get_job_offers(self, text_search: str) -> list[Job]:
-        html = self.get_html(text_search)
-        soup = BeautifulSoup(html, 'html.parser')
-        jobs = soup.find_all('div', attrs={'data-job-id': True})
+    def get_job_offers(self, text_search: str, pages: int = 3) -> list[Job]:
+        jobs = []
         filtered_jobs: list[Job] = []
+
+        for page_index in range(pages):
+            html = self.get_html(text_search, self.jobs_chunk * page_index)
+            soup = BeautifulSoup(html, 'html.parser')
+            jobs += soup.find_all('div', attrs={'data-job-id': True})
+
         for job in jobs:
             clean_job = self.process_job(job)
             if self.extraction_service.detect_keywords(clean_job.description):
