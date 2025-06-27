@@ -9,3 +9,11 @@ class ExtractionService:
             if keyword in desc_lower:
                 return True
         return False
+    
+    def extract_keywords(self, description: str) -> list[str]:
+        desc_lower = description.lower()
+        extracted = []
+        for keyword in self.keywords:
+            if keyword in desc_lower:
+                extracted.append(keyword)
+        return extracted
