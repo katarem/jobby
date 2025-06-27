@@ -11,7 +11,6 @@ from model.job import Job
 from model.job_details import JobDetails
 from service.extraction_service import ExtractionService
 from model.search_result import SearchResult
-from model.config import Config
 from utils.utils import is_first_launch
 
 class JobService:
