@@ -9,8 +9,7 @@ load_dotenv()
 
 if __name__ == "__main__":
     
-    user_data_dir = os.getenv('USER_DATA_DIR', 'user.dir/jobby')
-    keywords = os.getenv('KEYWORDS')
+    user_data_dir = os.getenv('USER_DATA_DIR', os.path.join(os.getcwd(),'user_data'))
     configuration_service = ConfigurationService()
     config: Config = configuration_service.get_config()
 
