@@ -53,7 +53,7 @@ class JobService:
             soup = BeautifulSoup(html, 'html.parser')
             jobs += soup.find_all('div', attrs={'data-job-id': True})
 
-        if len(self.extraction_service.keywords) < 1:
+        if not self.extraction_service.keywords:
             return [SearchResult(self.process_job(job), []) for job in jobs]
 
         for job in jobs:
