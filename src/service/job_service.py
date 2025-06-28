@@ -53,12 +53,11 @@ class JobService:
             soup = BeautifulSoup(html, 'html.parser')
             jobs += soup.find_all('div', attrs={'data-job-id': True})
 
-        if not self.extraction_service.keywords:
-            return [SearchResult(self.process_job(job), []) for job in jobs]
-
         for job in jobs:
             clean_job = self.process_job(job)
-            if self.extraction_service.detect_keywords(clean_job.description):
+            if not self.extraction_service.keywords:
+                filtered_jobs.append(SearchResult(clean_job, []))
+            elif self.extraction_service.detect_keywords(clean_job.description):
                 keywords = self.extraction_service.extract_keywords(clean_job.description)
                 filtered_jobs.append(SearchResult(clean_job, keywords))
 
