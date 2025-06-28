@@ -55,6 +55,8 @@ class JobService:
 
         for job in jobs:
             clean_job = self.process_job(job)
+            if len(self.extraction_service.keywords) < 1:
+                filtered_jobs.append(SearchResult(clean_job, []))
             if self.extraction_service.detect_keywords(clean_job.description):
                 keywords = self.extraction_service.extract_keywords(clean_job.description)
                 filtered_jobs.append(SearchResult(clean_job, keywords))

@@ -89,3 +89,19 @@ class TestJobService(unittest.TestCase):
         details = job_service.get_details(mock_soup.return_value)
         self.assertIsInstance(details, JobDetails)
         self.assertEqual(details.location, "Test Location")
+
+    @patch('service.job_service.webdriver.Chrome')
+    @patch('service.job_service.BeautifulSoup')
+    @patch('service.job_service.time.sleep')
+    def test_get_job_offers_with_empty_keywords(self, mock_sleep, mock_soup, mock_chrome):
+        mock_chrome.return_value = MagicMock()
+        extraction_service = MagicMock()
+        extraction_service.keywords = []
+        job_service = JobService(user_data="test_user_data", extraction_service=extraction_service)
+        
+        mock_soup.return_value.find_all.return_value = [MagicMock()]
+        filtered_jobs = job_service.get_job_offers("developer", pages=1)
+        
+        self.assertGreater(len(filtered_jobs), 0)
+        self.assertIsInstance(filtered_jobs[0], SearchResult)
+        self.assertEqual(filtered_jobs[0].matching_keywords, [])
