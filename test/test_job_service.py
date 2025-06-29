@@ -3,6 +3,7 @@ import shutil
 import unittest
 from unittest.mock import MagicMock, patch
 from selenium.webdriver.chrome.options import Options
+from model.config import Config
 from service.job_service import JobService
 from model.job import Job
 from model.job_details import JobDetails
@@ -105,3 +106,17 @@ class TestJobService(unittest.TestCase):
         self.assertGreater(len(filtered_jobs), 0)
         self.assertIsInstance(filtered_jobs[0], SearchResult)
         self.assertEqual(filtered_jobs[0].matching_keywords, [])
+
+    @patch('service.job_service.webdriver.Chrome')
+    @patch('service.job_service.time.sleep')
+    def test_get_html_with_search_location(self, mock_sleep, mock_chrome):
+        mock_chrome.return_value = MagicMock()
+        extraction_service = MagicMock()
+        job_service = JobService(user_data="test_user_data", extraction_service=extraction_service)
+        mock_driver = mock_chrome.return_value
+        job_service.driver.get = MagicMock()
+        config = Config(title="developer", search_location="European Union", filter_locations=[], keywords=[])
+        job_service.get_html(config, 0)
+        job_service.driver.get.assert_called_once()
+        called_url = job_service.driver.get.call_args[0][0]
+        self.assertIn("geoId=91000000", called_url)
