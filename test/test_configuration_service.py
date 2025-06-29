@@ -10,13 +10,15 @@ from exception.invalid_configuration_file import InvalidConfigurationError
 class ConfigurationServiceTest(TestCase):
 
     @patch("os.path.exists", return_value=True)
-    @patch("builtins.open", new_callable=mock_open, read_data='{"title": "developer", "keywords": ["python"] }')
+    @patch("builtins.open", new_callable=mock_open, read_data='{"title": "developer", "keywords": ["python"], "search_location": "European Union", "filter_locations": ["poland", "germany"]}')
     def test_get_configuration_ok(self, mock_open, mock_exists):
         configuration_service = ConfigurationService()
         config = configuration_service.get_config()
         self.assertIsInstance(config, Config)
         self.assertEqual(config.title, "developer")
         self.assertEqual(config.keywords, ["python"])
+        self.assertEqual(config.search_location, "European Union")
+        self.assertEqual(config.filter_locations, ["poland", "germany"])
 
     @patch("os.path.exists", return_value=False)
     def test_configuration_file_not_found_error(self, mock_exists):

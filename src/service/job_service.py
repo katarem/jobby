@@ -7,10 +7,12 @@ from bs4 import BeautifulSoup, Tag
 from selenium.webdriver.chrome.options import Options
 from selenium import webdriver
 
+from model.config import Config
 from model.job import Job
 from model.job_details import JobDetails
 from service.extraction_service import ExtractionService
 from model.search_result import SearchResult
+from service.location_service import LocationService
 from utils.utils import is_first_launch
 
 class JobService:
@@ -19,12 +21,15 @@ class JobService:
     search_link = f"{base_link}/jobs/search/?keywords=%s"
     search_delay = 60
     jobs_chunk = 25
+    location_service: LocationService = LocationService()
 
     def __init__(self, user_data: str, extraction_service: ExtractionService):
         self.user_data = user_data
         self.driver = webdriver.Chrome(options=self.load_options())
         self.extraction_service = extraction_service
         self.export_path = os.path.join(os.getenv('USER_DATA_DIR', os.path.join(os.getcwd(),'user_data')), 'export.json')
+        self.debug_mode = os.getenv('DEBUG_MODE', 'false').lower() == 'true'
+
 
     def load_options(self) -> Options:
         options = Options()
@@ -35,28 +40,37 @@ class JobService:
             self.search_delay = 5
         return options
     
-    def get_html(self, job: str, start: int) -> str:
-        job_to_search = urllib.parse.quote(job)
-        final_link = self.search_link.replace("%s",job_to_search)
+    def get_html(self, search_params: Config, start: int) -> str:
+        job_to_search = urllib.parse.quote(str(search_params.title))
+        final_link = self.search_link.replace("%s", job_to_search)
         if start > 0:
             final_link += f"&start={start}"
+        location = self.location_service.parse_location(search_params.search_location)
+        if location is not None:
+            final_link += f"&geoId={location}"
+        if self.debug_mode:
+            print(f'generated URL={final_link}')
         self.driver.get(final_link)
         time.sleep(self.search_delay)
         return self.driver.page_source
     
-    def get_job_offers(self, text_search: str, pages: int = 3) -> list[Job]:
+    def get_job_offers(self, search_params: Config, pages: int = 3) -> list[Job]:
         jobs = []
         filtered_jobs: list[SearchResult] = []
 
         for page_index in range(pages):
-            html = self.get_html(text_search, self.jobs_chunk * page_index)
+            html = self.get_html(search_params, self.jobs_chunk * page_index)
             soup = BeautifulSoup(html, 'html.parser')
             jobs += soup.find_all('div', attrs={'data-job-id': True})
 
         for job in jobs:
             clean_job = self.process_job(job)
             if not self.extraction_service.keywords:
-                filtered_jobs.append(SearchResult(clean_job, []))
+                if search_params.filter_locations:
+                    if any(location in clean_job.job_details.location.lower() for location in search_params.filter_locations):
+                        filtered_jobs.append(SearchResult(clean_job, []))
+                else:
+                    filtered_jobs.append(SearchResult(clean_job, []))
             elif self.extraction_service.detect_keywords(clean_job.description):
                 keywords = self.extraction_service.extract_keywords(clean_job.description)
                 filtered_jobs.append(SearchResult(clean_job, keywords))
