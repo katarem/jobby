@@ -1,10 +1,12 @@
 import time
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, Tag
 from selenium.webdriver.chrome.options import Options
 from selenium import webdriver
 import urllib
 
 from model.config import Config
+from model.job import Job
+from model.job_details import JobDetails
 from utils.utils import is_first_launch
 
 class WebService:
@@ -42,4 +44,45 @@ class WebService:
             html = self.get_html(search_params, self.jobs_chunk * page_index)
             soup = BeautifulSoup(html, 'html.parser')
             jobs += soup.find_all('div', attrs={'data-job-id': True})
+        return jobs
+    
+    def map_tag_to_job(self, job: Tag) -> Job:
+        title = job.find("a", class_="job-card-container__link").get_text(strip=True, separator=", ")
+        business = job.find("div", class_="artdeco-entity-lockup__subtitle").get_text(strip=True, separator=", ")
+        url = job.find("a", class_="job-card-container__link")["href"]
+        img = job.find("img")
+        logo_url = img["src"] if img else None
+        
+        job_link = self.base_link + url
+        self.driver.get(job_link)
+        time.sleep(2)
+        
+        loaded_job_page = self.driver.page_source
+        soup = BeautifulSoup(loaded_job_page, 'html.parser')
+        job_details_tag = soup.find('div', id='job-details')
+        description = job_details_tag.get_text(separator='\n', strip=True)
+        
+        job_details = self.get_details(soup)
+
+        return Job(title,description,business,url,logo_url, job_details)
+    
+    def get_details(self, soup: BeautifulSoup) -> JobDetails:
+        primary_desc = soup.find('div', class_='job-details-jobs-unified-top-card__primary-description-container')
+        spans = primary_desc.find_all('span', class_='tvm__text tvm__text--low-emphasis')
+        location = date = applications = 'Not found'
+        if spans:
+            if len(spans) > 0:
+                location = spans[0].get_text(strip=True)
+            if len(spans) > 2:
+                date = spans[2].get_text(strip=True)
+            if len(spans) > 4:
+                applications = spans[4].get_text(strip=True)
+        return JobDetails(location,date,applications)
+    
+    def get_jobs(self, search_params: Config, pages: int) -> list[Job]:
+        tags = self.get_job_tags(search_params,pages)
+        jobs: list[Job] = []
+        for tag in tags:
+            job = self.map_tag_to_job(tag)
+            jobs.append(job)
         return jobs
