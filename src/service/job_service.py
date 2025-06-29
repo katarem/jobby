@@ -41,8 +41,8 @@ class JobService:
         return options
     
     def get_html(self, search_params: Config, start: int) -> str:
-        job_to_search = urllib.parse.quote(search_params.title)
-        final_link = self.search_link.replace("%s",job_to_search)
+        job_to_search = urllib.parse.quote(str(search_params.title))
+        final_link = self.search_link.replace("%s", job_to_search)
         if start > 0:
             final_link += f"&start={start}"
         location = self.location_service.parse_location(search_params.search_location)

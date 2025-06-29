@@ -37,7 +37,8 @@ class TestJobService(unittest.TestCase):
         mock_driver = mock_chrome.return_value
         mock_driver.page_source = "<html><body>Test HTML</body></html>"
         job_service.driver.get = MagicMock()
-        html = job_service.get_html("developer", 0)
+        config = Config(title="developer", search_location="European Union", filter_locations=[], keywords=[])
+        html = job_service.get_html(config, 0)
         job_service.driver.get.assert_called_once()
         self.assertIsInstance(html, str)
 
@@ -51,7 +52,8 @@ class TestJobService(unittest.TestCase):
         extraction_service.extract_keywords.return_value = ["Python", "Django"]
         job_service = JobService(user_data="test_user_data", extraction_service=extraction_service)
         mock_soup.return_value.find_all.return_value = [MagicMock()]
-        filtered_jobs = job_service.get_job_offers("developer", pages=1)
+        config = Config(title="developer", search_location="European Union", filter_locations=[], keywords=[])
+        filtered_jobs = job_service.get_job_offers(config, pages=1)
         self.assertGreater(len(filtered_jobs), 0)
         self.assertIsInstance(filtered_jobs[0], SearchResult)
 
@@ -99,10 +101,9 @@ class TestJobService(unittest.TestCase):
         extraction_service = MagicMock()
         extraction_service.keywords = []
         job_service = JobService(user_data="test_user_data", extraction_service=extraction_service)
-        
         mock_soup.return_value.find_all.return_value = [MagicMock()]
-        filtered_jobs = job_service.get_job_offers("developer", pages=1)
-        
+        config = Config(title="developer", search_location="European Union", filter_locations=[], keywords=[])
+        filtered_jobs = job_service.get_job_offers(config, pages=1)
         self.assertGreater(len(filtered_jobs), 0)
         self.assertIsInstance(filtered_jobs[0], SearchResult)
         self.assertEqual(filtered_jobs[0].matching_keywords, [])
