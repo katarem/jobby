@@ -33,6 +33,7 @@ class TestJobService(unittest.TestCase):
 
     @patch('service.job_service.open', new_callable=unittest.mock.mock_open)
     @patch('service.job_service.json.dumps')
+    @patch('service.job_service.open', new_callable=unittest.mock.mock_open)
     def test_export_job_offers(self, mock_json, mock_open):
         extraction_service = MagicMock()
         web_service = MagicMock()
