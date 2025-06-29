@@ -1,3 +1,4 @@
+import os
 import time
 from bs4 import BeautifulSoup, Tag
 from selenium.webdriver.chrome.options import Options
@@ -7,13 +8,22 @@ import urllib
 from model.config import Config
 from model.job import Job
 from model.job_details import JobDetails
+from service.location_service import LocationService
 from utils.utils import is_first_launch
 
 class WebService:
 
+    base_link = "https://linkedin.com"
+    search_link = f"{base_link}/jobs/search/?keywords=%s"
+    search_delay = 60
+    jobs_chunk = 25
+
+    location_service: LocationService = LocationService()
+
     def __init__(self, user_data: str):
-        self.driver = webdriver.Chrome(options=self.load_options())
         self.user_data = user_data
+        self.driver = webdriver.Chrome(options=self.load_options())
+        self.debug_mode = os.getenv('DEBUG_MODE', 'false').lower() == 'true'
 
     def load_options(self) -> Options:
         options = Options()

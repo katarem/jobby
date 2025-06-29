@@ -1,29 +1,24 @@
 from dataclasses import asdict
 import json
 import os
-import time
-from bs4 import BeautifulSoup, Tag
 
 from model.config import Config
 from model.job import Job
-from model.job_details import JobDetails
 from service.extraction_service import ExtractionService
 from model.search_result import SearchResult
+from service.filter_service import FilterService
 from service.location_service import LocationService
 from service.web_service import WebService
 
 class JobService:
 
-    base_link = "https://linkedin.com"
-    search_link = f"{base_link}/jobs/search/?keywords=%s"
-    search_delay = 60
-    jobs_chunk = 25
     location_service: LocationService = LocationService()
 
     def __init__(self, user_data: str, extraction_service: ExtractionService, web_service: WebService):
-        
+
         self.web_service = web_service
         self.extraction_service = extraction_service
+        self.filter_service: FilterService = FilterService(self.extraction_service, self.location_service)
         
         self.user_data = user_data
         self.export_path = os.path.join(os.getenv('USER_DATA_DIR', os.path.join(os.getcwd(),'user_data')), 'export.json')
@@ -31,23 +26,8 @@ class JobService:
 
     
     def get_job_offers(self, search_params: Config, pages: int = 3) -> list[Job]:
-        jobs = []
-        filtered_jobs: list[SearchResult] = []
-
         jobs = self.web_service.get_jobs(search_params,pages)
-
-        for job in jobs:
-            if not self.extraction_service.keywords:
-                if search_params.filter_locations:
-                    if any(location in job.job_details.location.lower() for location in search_params.filter_locations):
-                        filtered_jobs.append(SearchResult(job, []))
-                else:
-                    filtered_jobs.append(SearchResult(job, []))
-            elif self.extraction_service.detect_keywords(job.description):
-                keywords = self.extraction_service.extract_keywords(job.description)
-                filtered_jobs.append(SearchResult(job, keywords))
-
-        return filtered_jobs
+        return self.filter_service.apply_filters(jobs, search_params)
     
     def export_job_offers(self, jobs: list[SearchResult]) -> bool:
         try:
