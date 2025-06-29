@@ -21,10 +21,14 @@ class TestWebService(unittest.TestCase):
     @patch('service.web_service.webdriver.Chrome')
     @patch('service.web_service.BeautifulSoup')
     @patch('service.web_service.time.sleep')
-    def test_get_job_offers(self, mock_sleep, mock_soup, mock_chrome):
+    @patch('service.web_service.WebService.map_tag_to_job')
+    def test_get_job_offers(self, mock_map_tag_to_job, mock_sleep, mock_soup, mock_chrome):
         mock_chrome.return_value = MagicMock()
         web_service = WebService(user_data="test_user_data")
         mock_soup.return_value.find_all.return_value = [MagicMock()]
+        mock_map_tag_to_job.return_value = MagicMock(title="Dummy Job", link="http://dummy.link")
         config = Config(title="developer", search_location="European Union", filter_locations=[], keywords=[])
         jobs = web_service.get_jobs(config, pages=1)
         self.assertGreater(len(jobs), 0)
+        self.assertEqual(jobs[0].title, "Dummy Job")
+        self.assertEqual(jobs[0].link, "http://dummy.link")
