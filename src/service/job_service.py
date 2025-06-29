@@ -28,7 +28,7 @@ class JobService:
         self.driver = webdriver.Chrome(options=self.load_options())
         self.extraction_service = extraction_service
         self.export_path = os.path.join(os.getenv('USER_DATA_DIR', os.path.join(os.getcwd(),'user_data')), 'export.json')
-        self.debug_mode = os.getenv('DEBUG_MODE', False)
+        self.debug_mode = os.getenv('DEBUG_MODE', 'false').lower() == 'true'
 
 
     def load_options(self) -> Options:
