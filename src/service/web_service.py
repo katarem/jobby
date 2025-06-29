@@ -48,7 +48,7 @@ class WebService:
         time.sleep(self.search_delay)
         return self.driver.page_source
     
-    def get_job_tags(self, search_params: Config, pages: int) -> str:
+    def get_job_tags(self, search_params: Config, pages: int) -> list[Tag]:
         jobs = []
         for page_index in range(pages):
             html = self.get_html(search_params, self.jobs_chunk * page_index)
