@@ -2,10 +2,7 @@ from dataclasses import asdict
 import json
 import os
 import time
-import urllib.parse
 from bs4 import BeautifulSoup, Tag
-from selenium.webdriver.chrome.options import Options
-from selenium import webdriver
 
 from model.config import Config
 from model.job import Job
@@ -13,7 +10,7 @@ from model.job_details import JobDetails
 from service.extraction_service import ExtractionService
 from model.search_result import SearchResult
 from service.location_service import LocationService
-from utils.utils import is_first_launch
+from service.web_service import WebService
 
 class JobService:
 
@@ -23,45 +20,21 @@ class JobService:
     jobs_chunk = 25
     location_service: LocationService = LocationService()
 
-    def __init__(self, user_data: str, extraction_service: ExtractionService):
-        self.user_data = user_data
-        self.driver = webdriver.Chrome(options=self.load_options())
+    def __init__(self, user_data: str, extraction_service: ExtractionService, web_service: WebService):
+        
+        self.web_service = web_service
         self.extraction_service = extraction_service
+        
+        self.user_data = user_data
         self.export_path = os.path.join(os.getenv('USER_DATA_DIR', os.path.join(os.getcwd(),'user_data')), 'export.json')
         self.debug_mode = os.getenv('DEBUG_MODE', 'false').lower() == 'true'
 
-
-    def load_options(self) -> Options:
-        options = Options()
-        options.add_argument(f"--user-data-dir={self.user_data}")
-        options.add_argument("--profile-directory=Default")
-        if not is_first_launch(self.user_data):
-            options.add_argument("--headless")
-            self.search_delay = 5
-        return options
-    
-    def get_html(self, search_params: Config, start: int) -> str:
-        job_to_search = urllib.parse.quote(str(search_params.title))
-        final_link = self.search_link.replace("%s", job_to_search)
-        if start > 0:
-            final_link += f"&start={start}"
-        location = self.location_service.parse_location(search_params.search_location)
-        if location is not None:
-            final_link += f"&geoId={location}"
-        if self.debug_mode:
-            print(f'generated URL={final_link}')
-        self.driver.get(final_link)
-        time.sleep(self.search_delay)
-        return self.driver.page_source
     
     def get_job_offers(self, search_params: Config, pages: int = 3) -> list[Job]:
         jobs = []
         filtered_jobs: list[SearchResult] = []
 
-        for page_index in range(pages):
-            html = self.get_html(search_params, self.jobs_chunk * page_index)
-            soup = BeautifulSoup(html, 'html.parser')
-            jobs += soup.find_all('div', attrs={'data-job-id': True})
+        jobs = self.web_service.get_job_tags(search_params, pages)
 
         for job in jobs:
             clean_job = self.process_job(job)
