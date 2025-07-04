@@ -36,8 +36,8 @@ class InjectorService:
             return skills_list[0].capitalize()
         skills = ', '.join(skill.capitalize() for skill in skills_list[:-1])
         if language == Languages.ENGLISH.value:
-            last_conector = ' and '
+            last_connector = ' and '
         if language == Languages.SPANISH.value:
-            last_conector = ' y '
-        skills += last_conector + skills_list[-1].capitalize()
+            last_connector = ' y '
+        skills += last_connector + skills_list[-1].capitalize()
         return skills
