@@ -24,6 +24,6 @@ if __name__ == "__main__":
     job_service.export_job_offers(results)
     pdf_service = PdfService()
     injector_service = InjectorService()
-    for i in range(len(results)):
-        final_content = injector_service.inject_variables(config, results[i])
+    for i, result in enumerate(results):
+        final_content = injector_service.inject_variables(config, result)
         pdf_service.generate_card(final_content, f'{config.card_name}_{i}.pdf')
