@@ -10,7 +10,7 @@ class Card(FPDF):
     def __init__(self):
         super().__init__('L', unit = "mm", format = "A4")
         self.set_font('Times', '', self.normal_size)
-        self.set_margins(10,15,10)
+        self.set_margins(10,15,15)
 
     def header(self):
         self.set_font_size(self.date_size)

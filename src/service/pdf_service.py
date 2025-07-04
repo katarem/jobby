@@ -1,16 +1,16 @@
 import os
 
-from fpdf import FPDF
-
 from model.card import Card
-from model.config import Config
+
 
 
 class PdfService:
-    def test(self, content: str):
-        file = os.getenv('USER_DATA_DIR', os.path.join(os.getcwd(),'user_data','hola.pdf'))
+    def generate_card(self, content: str, filename: str):
+        folder = os.getenv('USER_DATA_DIR', os.path.join(os.getcwd(),'user_data','presentation_cards'))
+        if not os.path.exists(folder):
+            os.mkdir(folder)
         card = Card()
         card.fill(content)
         card.set_author('github.com/katarem/jobby')
-        card.output(file)
+        card.output(os.path.join(folder, filename))
         
