@@ -15,18 +15,18 @@ class InjectorService:
         return final_content
 
     def resolve_variable(self, config: Config, result: SearchResult, content: str, variable: CardVariables) -> str:
-        info_to_inyect = ''
+        replacement_info = ''
         if variable == CardVariables.JOB_TITLE:
-            info_to_inyect = result.job.title
+            replacement_info = result.job.title
         if variable == CardVariables.COMPANY_NAME:
-            info_to_inyect = result.job.business
+            replacement_info = result.job.business
         if variable == CardVariables.NAME:
-            info_to_inyect = config.card_name
+            replacement_info = config.card_name
         if variable == CardVariables.PLATFORM:
-            info_to_inyect = 'LinkedIn' # For the moment the only one we give support
+            replacement_info = 'LinkedIn' # For the moment the only one we give support
         if variable == CardVariables.SKILLS_LIST:
-            info_to_inyect = self.resolve_skills_list(result.matching_keywords, config.card_language)
-        return content.replace(variable.value, info_to_inyect)
+            replacement_info = self.resolve_skills_list(result.matching_keywords, config.card_language)
+        return content.replace(variable.value, replacement_info)
     
     def resolve_skills_list(self, skills_list: list[str], language: str) -> str:
         skills = ''
