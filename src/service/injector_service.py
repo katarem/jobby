@@ -19,7 +19,7 @@ class InjectorService:
         if variable == CardVariables.JOB_TITLE:
             info_to_inyect = result.job.title
         if variable == CardVariables.COMPANY_NAME:
-            info_to_inyect = result.job.corporation
+            info_to_inyect = result.job.business
         if variable == CardVariables.NAME:
             info_to_inyect = config.card_name
         if variable == CardVariables.PLATFORM:
