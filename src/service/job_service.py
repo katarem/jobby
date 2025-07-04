@@ -25,7 +25,7 @@ class JobService:
         self.debug_mode = os.getenv('DEBUG_MODE', 'false').lower() == 'true'
 
     
-    def get_job_offers(self, search_params: Config, pages: int = 3) -> list[Job]:
+    def get_job_offers(self, search_params: Config, pages: int = 3) -> list[SearchResult]:
         jobs = self.web_service.get_jobs(search_params,pages)
         return self.filter_service.apply_filters(jobs, search_params)
     
