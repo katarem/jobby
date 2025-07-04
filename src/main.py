@@ -1,9 +1,11 @@
 import os
 from dotenv import load_dotenv
+from service.injector_service import InjectorService
 from service.job_service import JobService
 from service.extraction_service import ExtractionService
 from service.configuration_service import ConfigurationService
 from model.config import Config
+from service.pdf_service import PdfService
 from service.web_service import WebService
 
 load_dotenv()
@@ -17,6 +19,11 @@ if __name__ == "__main__":
     extraction_service = ExtractionService(config.keywords)
     web_service = WebService(user_data_dir)
     job_service = JobService(user_data_dir, extraction_service, web_service)
-    jobs = job_service.get_job_offers(config, 1)
-    print(f"jobs with one or more keywords: {len(jobs)}")
-    job_service.export_job_offers(jobs)
+    results = job_service.get_job_offers(config, 1)
+    print(f"jobs with one or more keywords: {len(results)}")
+    job_service.export_job_offers(results)
+    pdf_service = PdfService()
+    injector_service = InjectorService()
+    if len(results) > 0:
+        final_content = injector_service.inject_variables(config, results[0])
+        pdf_service.test(final_content)
