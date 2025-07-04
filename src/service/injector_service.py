@@ -30,6 +30,8 @@ class InjectorService:
     
     def resolve_skills_list(self, skills_list: list[str], language: str) -> str:
         skills = ''
+        if not skills_list:  # Handle empty list case
+            return skills  # Return an empty string if no skills are provided
         if len(skills_list) < 2:
             return skills_list[0].capitalize()
         skills = ', '.join(skill.capitalize() for skill in skills_list[:-1])
