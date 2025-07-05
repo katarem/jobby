@@ -5,7 +5,7 @@ from model.job_details import JobDetails
 class Job:
     title: str
     description: str
-    corporation: str
+    business: str
     url: str
     img: str
     job_details: JobDetails

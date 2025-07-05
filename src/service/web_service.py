@@ -74,7 +74,7 @@ class WebService:
         
         job_details = self.get_details(soup)
 
-        return Job(title,description,business,url,logo_url, job_details)
+        return Job(title,description,business,self.base_link + url,logo_url, job_details)
     
     def get_details(self, soup: BeautifulSoup) -> JobDetails:
         primary_desc = soup.find('div', class_='job-details-jobs-unified-top-card__primary-description-container')
