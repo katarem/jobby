@@ -24,8 +24,8 @@ class TestJobService(unittest.TestCase):
         web_service = MagicMock()
         web_service.get_jobs = mock_get_jobs
         job_service = JobService(user_data="test_user_data", extraction_service=extraction_service, web_service=web_service)
-        config = Config(title="developer", search_location="European Union", filter_locations=[], keywords=[])
-        filtered_jobs = job_service.get_job_offers(config, pages=1)
+        config = Config(title="developer", search_location="European Union", filter_locations=[], keywords=[], pages=1)
+        filtered_jobs = job_service.get_job_offers(config)
         mock_get_jobs.assert_called_once_with(config, 1)
         mock_apply_filters.assert_called_once_with(mock_get_jobs.return_value, config)
         self.assertGreater(len(filtered_jobs), 0)

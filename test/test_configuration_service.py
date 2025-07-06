@@ -10,7 +10,7 @@ from configuration.exception.invalid_configuration_file import InvalidConfigurat
 class ConfigurationServiceTest(TestCase):
 
     @patch("os.path.exists", return_value=True)
-    @patch("builtins.open", new_callable=mock_open, read_data='{"title": "developer", "keywords": ["python"], "search_location": "European Union", "filter_locations": ["poland", "germany"]}')
+    @patch("builtins.open", new_callable=mock_open, read_data='{"title": "developer", "pages": 1, "keywords": ["python"], "search_location": "European Union", "filter_locations": ["poland", "germany"]}')
     def test_get_configuration_ok(self, mock_open, mock_exists):
         configuration_service = ConfigurationService()
         config = configuration_service.get_config()

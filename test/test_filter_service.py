@@ -15,26 +15,26 @@ class TestFilterService(unittest.TestCase):
 
     def test_apply_filters_with_keywords(self):
         job = Job("Title", "Description with Python", "Company", "URL", None, JobDetails("Location", "Date", "Applications"))
-        config = Config(title="developer", search_location="European Union", filter_locations=[], keywords=["python"])
+        config = Config(title="developer", search_location="European Union", filter_locations=[], keywords=["python"], pages=1)
         filtered_jobs = self.filter_service.apply_filters([job], config)
         self.assertEqual(len(filtered_jobs), 1)
         self.assertEqual(filtered_jobs[0].matching_keywords, ["python"])
 
     def test_apply_filters_without_keywords(self):
         job = Job("Title", "Description without keywords", "Company", "URL", None, JobDetails("Location", "Date", "Applications"))
-        config = Config(title="developer", search_location="European Union", filter_locations=[], keywords=[])
+        config = Config(title="developer", search_location="European Union", filter_locations=[], keywords=[], pages=1)
         filtered_jobs = self.filter_service.apply_filters([job], config)
         self.assertEqual(len(filtered_jobs), 1)
         self.assertEqual(filtered_jobs[0].matching_keywords, [])
 
     def test_apply_filters_with_location(self):
         job = Job("Title", "Description", "Company", "URL", None, JobDetails("Germany", "Date", "Applications"))
-        config = Config(title="developer", search_location="European Union", filter_locations=["Germany"], keywords=[])
+        config = Config(title="developer", search_location="European Union", filter_locations=["Germany"], keywords=[], pages=1)
         filtered_jobs = self.filter_service.apply_filters([job], config)
         self.assertEqual(len(filtered_jobs), 1)
 
     def test_apply_filters_with_non_matching_location(self):
         job = Job("Title", "Description", "Company", "URL", None, JobDetails("France", "Date", "Applications"))
-        config = Config(title="developer", search_location="European Union", filter_locations=["Germany"], keywords=[])
+        config = Config(title="developer", search_location="European Union", filter_locations=["Germany"], keywords=[], pages=1)
         filtered_jobs = self.filter_service.apply_filters([job], config)
         self.assertEqual(len(filtered_jobs), 0)

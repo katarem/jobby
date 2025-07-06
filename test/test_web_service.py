@@ -13,7 +13,7 @@ class TestWebService(unittest.TestCase):
         mock_driver = mock_chrome.return_value
         mock_driver.page_source = "<html><body>Test HTML</body></html>"
         web_service.driver.get = MagicMock()
-        config = Config(title="developer", search_location="European Union", filter_locations=[], keywords=[])
+        config = Config(title="developer", search_location="European Union", filter_locations=[], keywords=[],pages=1)
         html = web_service.get_html(config, 0)
         web_service.driver.get.assert_called_once()
         self.assertIsInstance(html, str)
@@ -27,7 +27,7 @@ class TestWebService(unittest.TestCase):
         web_service = WebService(user_data="test_user_data")
         mock_soup.return_value.find_all.return_value = [MagicMock()]
         mock_map_tag_to_job.return_value = MagicMock(title="Dummy Job", link="http://dummy.link")
-        config = Config(title="developer", search_location="European Union", filter_locations=[], keywords=[])
+        config = Config(title="developer", search_location="European Union", filter_locations=[], keywords=[],pages=1)
         jobs = web_service.get_jobs(config, pages=1)
         self.assertGreater(len(jobs), 0)
         self.assertEqual(jobs[0].title, "Dummy Job")
