@@ -2,7 +2,7 @@
 
 ## Overview
 
-Jobby is an automated tool designed to scrape job postings from a job website based on user-defined criteria. It allows users to search for jobs, filter results by location and keywords, and export the job offers to a JSON file for further analysis.
+Jobby is an automated tool designed to scrape job postings from a job website based on user-defined criteria. It allows users to search for jobs, filter results by location and keywords, export the job offers to a JSON file, and generate personalized PDF presentation cards for each job offer.
 
 ## Features
 
@@ -10,6 +10,8 @@ Jobby is an automated tool designed to scrape job postings from a job website ba
 - **Keyword Filtering**: Detect and extract keywords from job descriptions.
 - **Location Filtering**: Filter job offers based on predefined locations.
 - **Export Results**: Save job offers to a JSON file for easy access and sharing.
+- **PDF Generation**: Create personalized presentation cards for job offers in PDF format.
+- **Card Customization**: Use templates with dynamic variables to customize the content of the presentation cards.
 - **Debug Mode**: Enable detailed logging for troubleshooting.
 
 ## Installation
@@ -55,9 +57,13 @@ The project uses a `config.json` file to define search parameters. Place the fil
 ```json
 {
     "title": "Software Engineer",
+    "pages": 2,
     "search_location": "United States",
     "filter_locations": ["California", "New York"],
-    "keywords": ["Python", "Django", "Machine Learning"]
+    "keywords": ["Python", "Django", "Machine Learning"],
+    "card_template": "Hello {{name}},\nWe found a job for you at {{company_name}} as a {{job_title}}.\nSkills required: {{skills_list}}.\nPlatform: {{platform}}.",
+    "card_language": "en",
+    "card_name": "John Doe"
 }
 ```
 
@@ -69,6 +75,15 @@ user_data/export.json
 ```
 
 By default, the `user_data` folder is created inside the project directory. However, you can configure its location by setting the `USER_DATA_DIR` variable in the `.env` file.
+
+### PDF Generation
+
+Presentation cards for job offers are generated in PDF format and saved in:
+```
+user_data/presentation_cards/
+```
+
+The content of the cards is based on the `card_template` defined in the `config.json` file. Dynamic variables such as `{{name}}`, `{{company_name}}`, and `{{skills_list}}` are replaced with actual values.
 
 ### Debugging
 
