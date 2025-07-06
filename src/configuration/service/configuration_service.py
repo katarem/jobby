@@ -1,8 +1,8 @@
 import json
 import os
-from exception.configuration_file_not_found import ConfigurationFileNotFoundError
-from model.config import Config
-from exception.invalid_configuration_file import InvalidConfigurationError 
+from configuration.exception.configuration_file_not_found import ConfigurationFileNotFoundError
+from configuration.model.config import Config
+from configuration.exception.invalid_configuration_file import InvalidConfigurationError 
 
 class ConfigurationService:
     

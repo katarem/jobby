@@ -1,4 +1,4 @@
-from constant.geocodes import GeoCodes
+from location.constant.geocodes import GeoCodes
 
 
 class LocationService:

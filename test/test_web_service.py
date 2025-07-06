@@ -1,12 +1,12 @@
 import unittest
 from unittest.mock import MagicMock, patch
-from model.config import Config
-from service.web_service import WebService
+from configuration.model.config import Config
+from web.service.web_service import WebService
 
 class TestWebService(unittest.TestCase):
 
-    @patch('service.web_service.webdriver.Chrome')
-    @patch('service.web_service.time.sleep')
+    @patch('web.service.web_service.webdriver.Chrome')
+    @patch('web.service.web_service.time.sleep')
     def test_get_html(self, mock_sleep, mock_chrome):
         mock_chrome.return_value = MagicMock()
         web_service = WebService(user_data="test_user_data")
@@ -18,10 +18,10 @@ class TestWebService(unittest.TestCase):
         web_service.driver.get.assert_called_once()
         self.assertIsInstance(html, str)
 
-    @patch('service.web_service.webdriver.Chrome')
-    @patch('service.web_service.BeautifulSoup')
-    @patch('service.web_service.time.sleep')
-    @patch('service.web_service.WebService.map_tag_to_job')
+    @patch('web.service.web_service.webdriver.Chrome')
+    @patch('web.service.web_service.BeautifulSoup')
+    @patch('web.service.web_service.time.sleep')
+    @patch('web.service.web_service.WebService.map_tag_to_job')
     def test_get_job_offers(self, mock_map_tag_to_job, mock_sleep, mock_soup, mock_chrome):
         mock_chrome.return_value = MagicMock()
         web_service = WebService(user_data="test_user_data")

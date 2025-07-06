@@ -1,11 +1,10 @@
 import unittest
-from unittest.mock import MagicMock
-from model.config import Config
-from model.job import Job
-from model.job_details import JobDetails
-from service.filter_service import FilterService
-from service.extraction_service import ExtractionService
-from service.location_service import LocationService
+from configuration.model.config import Config
+from job.model.job import Job
+from job.model.job_details import JobDetails
+from filters.service.filter_service import FilterService
+from extraction.service.extraction_service import ExtractionService
+from location.service.location_service import LocationService
 
 class TestFilterService(unittest.TestCase):
 

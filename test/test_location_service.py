@@ -1,5 +1,5 @@
 import unittest
-from service.location_service import LocationService
+from location.service.location_service import LocationService
 
 class TestLocationService(unittest.TestCase):
 

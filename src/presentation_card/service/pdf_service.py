@@ -1,7 +1,6 @@
 import os
 
-from model.card import Card
-
+from presentation_card.model.card import Card
 
 
 class PdfService:

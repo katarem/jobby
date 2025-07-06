@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from model.job import Job
+from job.model.job import Job
 
 @dataclass
 class SearchResult:

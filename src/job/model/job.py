@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from model.job_details import JobDetails
+from job.model.job_details import JobDetails
 
 @dataclass
 class Job:

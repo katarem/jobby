@@ -2,13 +2,12 @@ from dataclasses import asdict
 import json
 import os
 
-from model.config import Config
-from model.job import Job
-from service.extraction_service import ExtractionService
-from model.search_result import SearchResult
-from service.filter_service import FilterService
-from service.location_service import LocationService
-from service.web_service import WebService
+from configuration.model.config import Config
+from extraction.service.extraction_service import ExtractionService
+from job.model.search_result import SearchResult
+from filters.service.filter_service import FilterService
+from location.service.location_service import LocationService
+from web.service.web_service import WebService
 
 class JobService:
 
