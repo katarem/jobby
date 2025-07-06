@@ -1,12 +1,12 @@
 import os
 from dotenv import load_dotenv
-from service.injector_service import InjectorService
-from service.job_service import JobService
-from service.extraction_service import ExtractionService
-from service.configuration_service import ConfigurationService
-from model.config import Config
-from service.pdf_service import PdfService
-from service.web_service import WebService
+from injection.service.injector_service import InjectorService
+from job.service.job_service import JobService
+from extraction.service.extraction_service import ExtractionService
+from configuration.service.configuration_service import ConfigurationService
+from configuration.model.config import Config
+from presentation_card.service.pdf_service import PdfService
+from web.service.web_service import WebService
 
 load_dotenv()
 

@@ -1,8 +1,7 @@
-from constant.card_variables import CardVariables
+from presentation_card.constant.card_variables import CardVariables
 from constant.languages import Languages
-from model.config import Config
-from model.job import Job
-from model.search_result import SearchResult
+from configuration.model.config import Config
+from job.model.search_result import SearchResult
 
 
 class InjectorService:

@@ -1,8 +1,8 @@
-from model.config import Config
-from model.job import Job
-from model.search_result import SearchResult
-from service.extraction_service import ExtractionService
-from service.location_service import LocationService
+from configuration.model.config import Config
+from job.model.job import Job
+from job.model.search_result import SearchResult
+from extraction.service.extraction_service import ExtractionService
+from location.service.location_service import LocationService
 
 
 class FilterService:

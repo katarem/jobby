@@ -1,10 +1,10 @@
 from unittest import TestCase
 from unittest.mock import patch, mock_open
 
-from model.config import Config
-from service.configuration_service import ConfigurationService
-from exception.configuration_file_not_found import ConfigurationFileNotFoundError
-from exception.invalid_configuration_file import InvalidConfigurationError
+from configuration.model.config import Config
+from configuration.service.configuration_service import ConfigurationService
+from configuration.exception.configuration_file_not_found import ConfigurationFileNotFoundError
+from configuration.exception.invalid_configuration_file import InvalidConfigurationError
 
 
 class ConfigurationServiceTest(TestCase):

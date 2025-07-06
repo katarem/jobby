@@ -5,10 +5,10 @@ from selenium.webdriver.chrome.options import Options
 from selenium import webdriver
 import urllib
 
-from model.config import Config
-from model.job import Job
-from model.job_details import JobDetails
-from service.location_service import LocationService
+from configuration.model.config import Config
+from job.model.job import Job
+from job.model.job_details import JobDetails
+from location.service.location_service import LocationService
 from utils.utils import is_first_launch
 
 class WebService:

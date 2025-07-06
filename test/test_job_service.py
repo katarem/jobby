@@ -2,9 +2,9 @@ import os
 import shutil
 import unittest
 from unittest.mock import MagicMock, patch
-from model.config import Config
-from model.search_result import SearchResult
-from service.job_service import JobService
+from configuration.model.config import Config
+from job.model.search_result import SearchResult
+from job.service.job_service import JobService
 
 class TestJobService(unittest.TestCase):
 

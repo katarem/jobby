@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from service.extraction_service import ExtractionService
+from extraction.service.extraction_service import ExtractionService
 
 class ExtractionServiceTest(TestCase):
 

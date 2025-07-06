@@ -1,7 +1,7 @@
 import unittest
 from unittest.mock import MagicMock, patch
-from model.config import Config
-from service.web_service import WebService
+from configuration.model.config import Config
+from web.service.web_service import WebService
 
 class TestWebService(unittest.TestCase):
 
