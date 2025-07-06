@@ -1,5 +1,5 @@
 from presentation_card.constant.card_variables import CardVariables
-from constant.languages import Languages
+from injection.constant.languages import Languages
 from configuration.model.config import Config
 from job.model.search_result import SearchResult
 
