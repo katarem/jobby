@@ -15,8 +15,8 @@ class TestJobService(unittest.TestCase):
     def setUp(self):
         os.mkdir("test_user_data")
 
-    @patch('service.job_service.FilterService.apply_filters')
-    @patch('service.job_service.WebService.get_jobs')
+    @patch('job.service.job_service.FilterService.apply_filters')
+    @patch('job.service.job_service.WebService.get_jobs')
     def test_get_job_offers(self, mock_get_jobs, mock_apply_filters):
         mock_get_jobs.return_value = [MagicMock()]
         mock_apply_filters.return_value = [SearchResult(MagicMock(), ["Python"])]
@@ -31,8 +31,8 @@ class TestJobService(unittest.TestCase):
         self.assertGreater(len(filtered_jobs), 0)
         self.assertIsInstance(filtered_jobs[0], SearchResult)
 
-    @patch('service.job_service.open', new_callable=unittest.mock.mock_open)
-    @patch('service.job_service.json.dumps')
+    @patch('job.service.job_service.open', new_callable=unittest.mock.mock_open)
+    @patch('job.service.job_service.json.dumps')
     def test_export_job_offers(self, mock_json, mock_open):
         extraction_service = MagicMock()
         web_service = MagicMock()

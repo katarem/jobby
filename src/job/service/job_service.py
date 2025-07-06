@@ -4,7 +4,7 @@ import os
 
 from configuration.model.config import Config
 from extraction.service.extraction_service import ExtractionService
-from model.search_result import SearchResult
+from job.model.search_result import SearchResult
 from filters.service.filter_service import FilterService
 from location.service.location_service import LocationService
 from web.service.web_service import WebService
